@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://raghul07102002.github.io/raghul-security",
+  "homepage": ".",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
