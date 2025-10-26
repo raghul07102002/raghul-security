@@ -63,27 +63,49 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontFamily: {
+        orbitron: ['Orbitron', 'sans-serif'],
+        exo: ['Exo 2', 'sans-serif'],
+      },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        flicker: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.8' },
+          '75%': { opacity: '0.9' },
+        },
+        scan: {
+          '0%, 100%': { transform: 'translateY(-100%)' },
+          '50%': { transform: 'translateY(100%)' },
+        },
+        slideInLeft: {
+          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideInRight: {
+          '0%': { transform: 'translateX(100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        pulse: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.5' },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        flicker: "flicker 3s infinite alternate",
+        scan: "scan 3s ease-in-out infinite",
+        slideInLeft: "slideInLeft 0.6s ease-out",
+        slideInRight: "slideInRight 0.6s ease-out",
+        pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
   },

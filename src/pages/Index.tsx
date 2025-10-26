@@ -1,13 +1,59 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { PortfolioProvider, usePortfolio } from '@/contexts/PortfolioContext';
+import HolographicScene from '@/components/portfolio/HolographicScene';
+import CardGrid from '@/components/portfolio/CardGrid';
+import AboutMe from '@/components/portfolio/AboutMe';
+import Resume from '@/components/portfolio/Resume';
+import CoverLetter from '@/components/portfolio/CoverLetter';
+import Projects from '@/components/portfolio/Projects';
+import Achievements from '@/components/portfolio/Achievements';
+import Learnings from '@/components/portfolio/Learnings';
+
+const PortfolioContent = () => {
+  const { currentView, setCurrentView } = usePortfolio();
+
+  const handleActivate = () => {
+    setCurrentView('cards');
+  };
+
+  const handleCardClick = (card: string) => {
+    setCurrentView(card);
+  };
+
+  const handleClose = () => {
+    setCurrentView('cards');
+  };
+
+  return (
+    <div className="min-h-screen">
+      <AnimatePresence mode="wait">
+        {currentView === 'landing' && (
+          <HolographicScene key="landing" onActivate={handleActivate} />
+        )}
+        {currentView === 'cards' && (
+          <CardGrid key="cards" onCardClick={handleCardClick} />
+        )}
+        {currentView === 'about' && <AboutMe key="about" onClose={handleClose} />}
+        {currentView === 'resume' && <Resume key="resume" onClose={handleClose} />}
+        {currentView === 'cover-letter' && (
+          <CoverLetter key="cover-letter" onClose={handleClose} />
+        )}
+        {currentView === 'projects' && <Projects key="projects" onClose={handleClose} />}
+        {currentView === 'achievements' && (
+          <Achievements key="achievements" onClose={handleClose} />
+        )}
+        {currentView === 'learnings' && <Learnings key="learnings" onClose={handleClose} />}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <PortfolioProvider>
+      <PortfolioContent />
+    </PortfolioProvider>
   );
 };
 
