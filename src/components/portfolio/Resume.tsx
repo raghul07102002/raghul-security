@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Download, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,12 +13,12 @@ const Resume = ({ onClose }: ResumeProps) => {
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
   const [resumeData, setResumeData] = useState<{ name: string; data: string; type: string } | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     const saved = localStorage.getItem('resumeFile');
     if (saved) {
       setResumeData(JSON.parse(saved));
     }
-  });
+  }, []);
 
   const handleUploadClick = () => {
     setShowPasswordPrompt(true);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Download, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,12 +13,12 @@ const CoverLetter = ({ onClose }: CoverLetterProps) => {
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
   const [coverLetterData, setCoverLetterData] = useState<{ name: string; data: string; type: string } | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     const saved = localStorage.getItem('coverLetterFile');
     if (saved) {
       setCoverLetterData(JSON.parse(saved));
     }
-  });
+  }, []);
 
   const handleUploadClick = () => {
     setShowPasswordPrompt(true);

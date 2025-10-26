@@ -63,14 +63,27 @@ const Achievements = ({ onClose }: AchievementsProps) => {
       input.onchange = (e: any) => {
         const files = Array.from(e.target.files) as File[];
         if (files.length > 0) {
-          const newCerts = files.map((file) => ({
-            id: Date.now().toString() + Math.random(),
-            name: file.name,
-            url: URL.createObjectURL(file),
-            addedAt: new Date().toISOString(),
-          }));
-          saveCertificates([...certificates, ...newCerts]);
-          toast.success(`${files.length} certificate(s) uploaded successfully!`);
+          let processed = 0;
+          const newCerts: Certificate[] = [];
+          
+          files.forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              newCerts.push({
+                id: Date.now().toString() + Math.random(),
+                name: file.name,
+                url: reader.result as string,
+                addedAt: new Date().toISOString(),
+              });
+              processed++;
+              
+              if (processed === files.length) {
+                saveCertificates([...certificates, ...newCerts]);
+                toast.success(`${files.length} certificate(s) uploaded successfully!`);
+              }
+            };
+            reader.readAsDataURL(file);
+          });
         }
       };
       input.click();
