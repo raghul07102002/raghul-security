@@ -11,7 +11,14 @@ interface ResumeProps {
 
 const Resume = ({ onClose }: ResumeProps) => {
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
-  const [hasResume, setHasResume] = useState(false);
+  const [resumeData, setResumeData] = useState<{ name: string; data: string; type: string } | null>(null);
+
+  useState(() => {
+    const saved = localStorage.getItem('resumeFile');
+    if (saved) {
+      setResumeData(JSON.parse(saved));
+    }
+  });
 
   const handleUploadClick = () => {
     setShowPasswordPrompt(true);
@@ -24,22 +31,33 @@ const Resume = ({ onClose }: ResumeProps) => {
     input.onchange = (e: any) => {
       const file = e.target.files[0];
       if (file) {
-        // Simulate file upload
-        localStorage.setItem('resumeFile', JSON.stringify({
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          uploadedAt: new Date().toISOString(),
-        }));
-        setHasResume(true);
-        toast.success('Resume uploaded successfully!');
+        const reader = new FileReader();
+        reader.onload = () => {
+          const fileData = {
+            name: file.name,
+            data: reader.result as string,
+            type: file.type,
+          };
+          localStorage.setItem('resumeFile', JSON.stringify(fileData));
+          setResumeData(fileData);
+          toast.success('Resume uploaded successfully!');
+        };
+        reader.readAsDataURL(file);
       }
     };
     input.click();
   };
 
   const handleDownload = () => {
-    toast.info('Download functionality ready. Resume file would be downloaded here.');
+    if (resumeData) {
+      const link = document.createElement('a');
+      link.href = resumeData.data;
+      link.download = resumeData.name;
+      link.click();
+      toast.success('Resume downloaded!');
+    } else {
+      toast.error('No resume available to download');
+    }
   };
 
   return (
@@ -70,14 +88,36 @@ const Resume = ({ onClose }: ResumeProps) => {
             </h2>
 
             <div className="space-y-6">
-              <p className="text-foreground/80 text-lg">
-                Download my professional resume or upload a new version.
-              </p>
+              {resumeData ? (
+                <div className="mb-8">
+                  {resumeData.type === 'application/pdf' ? (
+                    <iframe
+                      src={resumeData.data}
+                      className="w-full h-[600px] rounded-lg border border-primary/30"
+                      title="Resume Preview"
+                    />
+                  ) : (
+                    <div className="p-8 bg-primary/10 rounded-lg border border-primary/30">
+                      <p className="text-foreground/80 text-center">
+                        File: {resumeData.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground text-center mt-2">
+                        Preview not available for this file type. Use download button.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p className="text-foreground/80 text-lg">
+                  Upload your professional resume to display and download.
+                </p>
+              )}
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
                 <Button
                   onClick={handleDownload}
-                  className="bg-primary hover:bg-primary/80 text-background font-orbitron min-w-[200px]"
+                  disabled={!resumeData}
+                  className="bg-primary hover:bg-primary/80 text-background font-orbitron min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Download className="w-5 h-5 mr-2" />
                   DOWNLOAD RESUME

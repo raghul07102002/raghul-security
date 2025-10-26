@@ -25,6 +25,10 @@ const PortfolioContent = () => {
     setCurrentView('cards');
   };
 
+  const handleBackToLanding = () => {
+    setCurrentView('landing');
+  };
+
   return (
     <div className="min-h-screen">
       <AnimatePresence mode="wait">
@@ -32,7 +36,7 @@ const PortfolioContent = () => {
           <HolographicScene key="landing" onActivate={handleActivate} />
         )}
         {currentView === 'cards' && (
-          <CardGrid key="cards" onCardClick={handleCardClick} />
+          <CardGrid key="cards" onCardClick={handleCardClick} onBack={handleBackToLanding} />
         )}
         {currentView === 'about' && <AboutMe key="about" onClose={handleClose} />}
         {currentView === 'resume' && <Resume key="resume" onClose={handleClose} />}

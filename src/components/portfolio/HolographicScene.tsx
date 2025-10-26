@@ -113,20 +113,31 @@ const HolographicScene = ({ onActivate }: HolographicSceneProps) => {
           />
         )}
 
-        {/* Click indicator */}
+        {/* Name and role */}
         <motion.div
-          className="absolute -bottom-20 left-1/2 -translate-x-1/2 text-center"
-          animate={{
-            opacity: [0.5, 1, 0.5],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-          }}
+          className="absolute -bottom-32 left-1/2 -translate-x-1/2 text-center w-full"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
         >
-          <p className="text-primary cyber-glow text-sm md:text-base font-orbitron">
-            CLICK TO ACTIVATE
+          <h1 className="text-3xl md:text-5xl font-orbitron text-primary cyber-glow mb-2">
+            RAGHUL R
+          </h1>
+          <p className="text-lg md:text-2xl font-orbitron text-secondary mb-6">
+            Security Engineer
           </p>
+          <motion.p
+            className="text-primary cyber-glow text-sm md:text-base font-orbitron"
+            animate={{
+              opacity: [0.5, 1, 0.5],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+            }}
+          >
+            CLICK TO ACTIVATE
+          </motion.p>
         </motion.div>
       </motion.div>
 

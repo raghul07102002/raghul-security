@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
-import { User, FileText, FolderOpen, Award, BookOpen, Briefcase } from 'lucide-react';
+import { User, FileText, FolderOpen, Award, BookOpen, Briefcase, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface CardGridProps {
   onCardClick: (card: string) => void;
+  onBack: () => void;
 }
 
 const cards = [
@@ -14,9 +16,18 @@ const cards = [
   { id: 'learnings', title: 'Learnings', icon: BookOpen, position: 'right' },
 ];
 
-const CardGrid = ({ onCardClick }: CardGridProps) => {
+const CardGrid = ({ onCardClick, onBack }: CardGridProps) => {
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center p-8 grid-background">
+      {/* Back button */}
+      <Button
+        onClick={onBack}
+        className="fixed top-8 left-8 z-50 bg-accent hover:bg-accent/80 text-white font-orbitron"
+        size="lg"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        BACK
+      </Button>
       {/* Red scanning beam effect */}
       <motion.div
         className="absolute inset-0 pointer-events-none"

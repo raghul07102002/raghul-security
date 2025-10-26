@@ -11,6 +11,14 @@ interface CoverLetterProps {
 
 const CoverLetter = ({ onClose }: CoverLetterProps) => {
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [coverLetterData, setCoverLetterData] = useState<{ name: string; data: string; type: string } | null>(null);
+
+  useState(() => {
+    const saved = localStorage.getItem('coverLetterFile');
+    if (saved) {
+      setCoverLetterData(JSON.parse(saved));
+    }
+  });
 
   const handleUploadClick = () => {
     setShowPasswordPrompt(true);
@@ -23,20 +31,33 @@ const CoverLetter = ({ onClose }: CoverLetterProps) => {
     input.onchange = (e: any) => {
       const file = e.target.files[0];
       if (file) {
-        localStorage.setItem('coverLetterFile', JSON.stringify({
-          name: file.name,
-          size: file.size,
-          type: file.type,
-          uploadedAt: new Date().toISOString(),
-        }));
-        toast.success('Cover letter uploaded successfully!');
+        const reader = new FileReader();
+        reader.onload = () => {
+          const fileData = {
+            name: file.name,
+            data: reader.result as string,
+            type: file.type,
+          };
+          localStorage.setItem('coverLetterFile', JSON.stringify(fileData));
+          setCoverLetterData(fileData);
+          toast.success('Cover letter uploaded successfully!');
+        };
+        reader.readAsDataURL(file);
       }
     };
     input.click();
   };
 
   const handleDownload = () => {
-    toast.info('Download functionality ready. Cover letter would be downloaded here.');
+    if (coverLetterData) {
+      const link = document.createElement('a');
+      link.href = coverLetterData.data;
+      link.download = coverLetterData.name;
+      link.click();
+      toast.success('Cover letter downloaded!');
+    } else {
+      toast.error('No cover letter available to download');
+    }
   };
 
   return (
@@ -67,14 +88,36 @@ const CoverLetter = ({ onClose }: CoverLetterProps) => {
             </h2>
 
             <div className="space-y-6">
-              <p className="text-foreground/80 text-lg">
-                Download my professional cover letter or upload a new version.
-              </p>
+              {coverLetterData ? (
+                <div className="mb-8">
+                  {coverLetterData.type === 'application/pdf' ? (
+                    <iframe
+                      src={coverLetterData.data}
+                      className="w-full h-[600px] rounded-lg border border-primary/30"
+                      title="Cover Letter Preview"
+                    />
+                  ) : (
+                    <div className="p-8 bg-primary/10 rounded-lg border border-primary/30">
+                      <p className="text-foreground/80 text-center">
+                        File: {coverLetterData.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground text-center mt-2">
+                        Preview not available for this file type. Use download button.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p className="text-foreground/80 text-lg">
+                  Upload your professional cover letter to display and download.
+                </p>
+              )}
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
                 <Button
                   onClick={handleDownload}
-                  className="bg-primary hover:bg-primary/80 text-background font-orbitron min-w-[200px]"
+                  disabled={!coverLetterData}
+                  className="bg-primary hover:bg-primary/80 text-background font-orbitron min-w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Download className="w-5 h-5 mr-2" />
                   DOWNLOAD
